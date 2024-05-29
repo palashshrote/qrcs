@@ -16,39 +16,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.brown,
         title: Text('QR Code Scanner'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ScannerPage()),
-                );
-              },
-              child: Text('Scan QR Code'),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Code Type',
-              ),
-              readOnly: true,
-              controller: TextEditingController(text: codeType),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Code Data',
-              ),
-              readOnly: true,
-              controller: TextEditingController(text: codeData),
-            ),
-          ],
+      body: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.brown,
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          ),
+          onPressed: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ScannerPage()),
+            );
+          },
+          child: Text('Scan QR Code'),
         ),
       ),
     );

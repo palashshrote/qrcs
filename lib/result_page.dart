@@ -9,6 +9,7 @@ class ResultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.brown,
         title: const Text('Result Page'),
       ),
       body: Padding(
