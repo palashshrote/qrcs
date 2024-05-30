@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
-class ResultPage extends StatelessWidget {
+class ResultPage2 extends StatelessWidget {
   final Map<String, dynamic> data;
 
-  const ResultPage({super.key, required this.data});
+  const ResultPage2({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +16,43 @@ class ResultPage extends StatelessWidget {
     // print(filterOut.feeds![0].field7);
     String? h20Level = filterOut.feeds![0].field6;
     String? temperature = filterOut.feeds![0].field7;
-    String? dateTime = filterOut.feeds![0].createdAt;
+    String? createddateString = filterOut.feeds![0].createdAt;
+    createddateString =
+        createddateString!.substring(0, createddateString.length - 1);
+
+    DateTime createddateTime = DateTime.parse(createddateString);
+    int year = createddateTime.year;
+    int month = createddateTime.month;
+    int day = createddateTime.day;
+    int createdEpochTimeMillis = createddateTime.millisecondsSinceEpoch;
+
+    final now = DateTime.now();
+    int currEpochTimeMillis = now.millisecondsSinceEpoch;
+
+    int epochTimeMin = (currEpochTimeMillis - createdEpochTimeMillis) ~/ 60000;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.brown,
         title: const Text('Result Page'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            const Text('Fetched Data:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            // Text(data.toString()),
-            Text("Date & Time : $dateTime"),
-            Text("Water level: $h20Level"),
-            Text("Temperature: $temperature"),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: filterOut.feeds!.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('Date  $year-$month-$day'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    'Temperature: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field7}°C'),
+                Text(
+                    'Water level: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field6}'),
+                Text('Updated $epochTimeMin minutes ago'),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

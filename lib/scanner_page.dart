@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'result_page.dart';
+import 'package:qrcs/result_page2.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
@@ -32,7 +33,7 @@ class _ScannerPageState extends State<ScannerPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown,
-        title: const Text('Scan QR Code'),
+        title: const Text('Device Validator'),
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on),
@@ -87,7 +88,10 @@ class _ScannerPageState extends State<ScannerPage> {
                         Text('Data: ${result!.code}'),
                       ],
                     )
-                  : const Text('Scan a code'),
+                  : const Text(
+                      'Scan a code',
+                      style: TextStyle(fontSize: 20),
+                    ),
             ),
           ),
         ],
@@ -115,7 +119,7 @@ class _ScannerPageState extends State<ScannerPage> {
         var response = await fetchApiData(cId, readApi, writeApi);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ResultPage(data: response)),
+          MaterialPageRoute(builder: (context) => ResultPage2(data: response)),
         );
       }
     });
@@ -127,7 +131,7 @@ class _ScannerPageState extends State<ScannerPage> {
     //     await http.get(Uri.parse('https://example.com/api?key=$apiKey'));
 
     final response = await http.get(Uri.parse(
-        'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=2'));
+        'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=1'));
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {

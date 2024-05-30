@@ -17,22 +17,40 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.brown,
-        title: Text('QR Code Scanner'),
+        title: const Text('Device validator'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.brown,
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      body: SizedBox.expand(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/homeScr.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-          onPressed: () async {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ScannerPage()),
-            );
-          },
-          child: Text('Scan QR Code'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 200,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown,
+                  shape: const StadiumBorder(),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                ),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ScannerPage()),
+                  );
+                },
+                child: const Text('Scan a Code'),
+              ),
+            ],
+          ),
         ),
       ),
     );
