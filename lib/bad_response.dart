@@ -7,6 +7,7 @@ class BadResponse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //In case of wrong QR scanned, this page is invoked
     return Scaffold(
       appBar: AppBar(
         title: const Text('Result'),

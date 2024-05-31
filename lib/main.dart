@@ -5,29 +5,25 @@ import 'package:qrcs/home_page.dart';
 import 'package:qrcs/bad_response.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MyApp()); //entry point when application starts
 }
 
 class MyApp extends StatelessWidget {
   // const MyApp({super.key});
-
-  // ThemeMode _themeMode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'QR Code Scanner',
       theme: ThemeData(
-        // primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
+        brightness: Brightness.dark, //for dark theme
       ),
-      initialRoute: '/',
+      initialRoute: '/', //navigating with named routes
       routes: {
         '/': (context) => const HomePage(),
         '/scanner': (context) => const ScannerPage(),
         '/result': (context) => const ResultPage(data: {}),
         '/badres': (context) => const BadResponse(),
-        // '/result': (context) => const ResultPage(data: {}),
       },
     );
   }

@@ -22,8 +22,12 @@ class _ScannerPageState extends State<ScannerPage> {
 
   @override
   void reassemble() {
+    //called whenever app is reloaded,
     super.reassemble();
     if (defaultTargetPlatform == TargetPlatform.android) {
+      controller?.pauseCamera();
+    }
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
       controller?.pauseCamera();
     }
     controller?.resumeCamera();
@@ -33,8 +37,8 @@ class _ScannerPageState extends State<ScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.brown,
         title: const Text('Device Validator'),
+        //4 icon button (toggle flash, switch camera, pause and resume camera)
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on),
@@ -79,11 +83,15 @@ class _ScannerPageState extends State<ScannerPage> {
             ),
           ),
           Expanded(
+            //for displaying the extracted data on the screen
             flex: 1,
             child: Center(
+              //used ternary operator to display the data based on the condition
+              //initially when we haven't performed the scan the result is empty
+              //it should only display the result after scan is performed
               child: (result != null)
                   ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center, //center view
                       children: [
                         Text('Type: ${describeEnum(result!.format)}'),
                         Text('Data: ${result!.code}'),
@@ -110,27 +118,34 @@ class _ScannerPageState extends State<ScannerPage> {
         });
         await controller.pauseCamera();
 
-        // Fetch data using the API key
-        // String? apiKey = scanData.code;
+        //Data extraction computation.
+        //As we have embedded data using 2'&'
+        //The 1st part is channelId, 2nd ReadApi, 3rd WriteApi
         String? qrData = scanData.code;
         List<String>? parts = qrData?.split('&');
         if (parts!.length < 3) {
+          //if we don't get above 3 info ==> then we've scanned wrong qr
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BadResponse()),
           );
         } else {
+          //storing info into variables
           String cId = parts[0];
           String readApi = parts[1];
           String writeApi = parts[2];
 
+          //storing http request using fetchApiData in variable
           var response = await fetchApiData(cId, readApi, writeApi);
           if (response.isEmpty) {
+            //if response is empty
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => BadResponse()),
             );
           } else {
+            //received JSON and calling ResultPage passing response as
+            //a parameter for displaying
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -144,6 +159,9 @@ class _ScannerPageState extends State<ScannerPage> {
 
   Future<Map<String, dynamic>> fetchApiData(
       String cId, String readApi, String writeApi) async {
+    //making http request in try catch block for handling exceptions, if response
+    //is valid then
+    //if invalid the it return empty <Map,String>
     try {
       final response = await http.get(Uri.parse(
           'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=1'));
