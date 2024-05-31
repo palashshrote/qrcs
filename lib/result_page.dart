@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
+import 'bad_response.dart';
+
 class ResultPage extends StatelessWidget {
   final Map<String, dynamic> data;
 
@@ -12,29 +14,85 @@ class ResultPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FilterOut filterOut = FilterOut.fromJson(data);
+    print('AFter scanning : $filterOut');
+    print('Number of feeds: ${filterOut.feeds!.length}');
+
+    if (filterOut.feeds == null || filterOut.feeds!.length < 1) {
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => BadResponse()),
+      //   );
+      // });
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Result'),
+        ),
+        body: Center(
+          child: const Text(
+              'Not a single feed yet.'), // Show a loading indicator while navigating
+        ),
+      );
+    }
+
     // print("Hello Temperature");
     // print(filterOut.feeds![0].field7);
     String? h20Level = filterOut.feeds![0].field6;
     String? temperature = filterOut.feeds![0].field7;
-    String? dateTime = filterOut.feeds![0].createdAt;
+    String? createddateString = filterOut.feeds![0].createdAt;
+    createddateString =
+        createddateString!.substring(0, createddateString.length - 1);
+
+    DateTime createddateTime = DateTime.parse(createddateString);
+    int year = createddateTime.year;
+    int month = createddateTime.month;
+    int day = createddateTime.day;
+    int createdEpochTimeMillis = createddateTime.millisecondsSinceEpoch;
+
+    final now = DateTime.now();
+    int currEpochTimeMillis = now.millisecondsSinceEpoch;
+
+    int epochTimeMin = (currEpochTimeMillis - createdEpochTimeMillis) ~/ 60000;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: const Text('Result Page'),
+        // backgroundColor: Colors.brown,
+        title: const Text(
+          'Result',
+          // style: TextStyle(fontSize: 22),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            const Text('Fetched Data:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            // Text(data.toString()),
-            Text("Date & Time : $dateTime"),
-            Text("Water level: $h20Level"),
-            Text("Temperature: $temperature"),
-          ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 250),
+          child: ListView.builder(
+            itemCount: filterOut.feeds!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  'Added on $year-$month-$day',
+                  style: TextStyle(fontSize: 25),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Temperature: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field7}°C',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Water level: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field6} cm',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Updated $epochTimeMin minutes ago',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

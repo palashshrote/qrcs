@@ -33,26 +33,44 @@ class ResultPage2 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown,
-        title: const Text('Result Page'),
+        // backgroundColor: Colors.brown,
+        title: const Text(
+          'Result',
+          // style: TextStyle(fontSize: 22),
+        ),
       ),
-      body: ListView.builder(
-        itemCount: filterOut.feeds!.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Date  $year-$month-$day'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    'Temperature: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field7}°C'),
-                Text(
-                    'Water level: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field6}'),
-                Text('Updated $epochTimeMin minutes ago'),
-              ],
-            ),
-          );
-        },
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 250),
+          child: ListView.builder(
+            itemCount: filterOut.feeds!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  'Added on $year-$month-$day',
+                  style: TextStyle(fontSize: 25),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Temperature: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field7}°C',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Water level: ${filterOut.feeds![filterOut.feeds!.length - index - 1].field6} cm',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Updated $epochTimeMin minutes ago',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

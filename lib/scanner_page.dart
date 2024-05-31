@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'result_page.dart';
-import 'package:qrcs/result_page2.dart';
+import 'package:qrcs/result_page.dart';
+import 'package:qrcs/bad_response.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
@@ -32,7 +33,7 @@ class _ScannerPageState extends State<ScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown,
+        // backgroundColor: Colors.brown,
         title: const Text('Device Validator'),
         actions: [
           IconButton(
@@ -113,29 +114,48 @@ class _ScannerPageState extends State<ScannerPage> {
         // String? apiKey = scanData.code;
         String? qrData = scanData.code;
         List<String>? parts = qrData?.split('&');
-        String cId = parts![0];
-        String readApi = parts[1];
-        String writeApi = parts[2];
-        var response = await fetchApiData(cId, readApi, writeApi);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ResultPage2(data: response)),
-        );
+        if (parts!.length < 3) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BadResponse()),
+          );
+        } else {
+          String cId = parts[0];
+          String readApi = parts[1];
+          String writeApi = parts[2];
+
+          var response = await fetchApiData(cId, readApi, writeApi);
+          if (response.isEmpty) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => BadResponse()),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ResultPage(data: response)),
+            );
+          }
+        }
       }
     });
   }
 
   Future<Map<String, dynamic>> fetchApiData(
       String cId, String readApi, String writeApi) async {
-    // final response =
-    //     await http.get(Uri.parse('https://example.com/api?key=$apiKey'));
+    try {
+      final response = await http.get(Uri.parse(
+          'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=1'));
 
-    final response = await http.get(Uri.parse(
-        'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=1'));
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to load data');
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return {};
     }
   }
 

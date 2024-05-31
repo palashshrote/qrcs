@@ -16,8 +16,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown,
-        title: const Text('Device validator'),
+        // backgroundColor: Colors.brown,
+        title: const Text('Device Validator'),
       ),
       body: SizedBox.expand(
         child: Container(
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown,
+                  backgroundColor: Colors.blueGrey[700],
                   shape: const StadiumBorder(),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
