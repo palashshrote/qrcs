@@ -4,8 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'result_page.dart';
-import 'package:qrcs/result_page.dart';
-import 'package:qrcs/bad_response.dart';
+import 'bad_response.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
@@ -15,10 +14,13 @@ class ScannerPage extends StatefulWidget {
 }
 
 class _ScannerPageState extends State<ScannerPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  Barcode? result;
-  bool _isScanning = true;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR'); // key helps identifying
+  QRViewController? controller; //controlling the state of camera view
+  Barcode?
+      result; //contains property like code will be used for storing code data,
+  //  format will be used for storing code type
+
+  bool _isScanning = true; //identifying current state of camera
 
   @override
   void reassemble() {
@@ -87,8 +89,7 @@ class _ScannerPageState extends State<ScannerPage> {
             flex: 1,
             child: Center(
               //used ternary operator to display the data based on the condition
-              //initially when we haven't performed the scan the result is empty
-              //it should only display the result after scan is performed
+              //initially when user haven't performed the scan the result is empty //it should only display the result after scan is performed
               child: (result != null)
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center, //center view
@@ -109,22 +110,25 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+    //creation and management of a QR code scanner
+    this.controller = controller; //setting the controller
     controller.scannedDataStream.listen((scanData) async {
+      //Whenever a QR code is scanned, the scanData parameter will contain the scanned data.
       if (_isScanning) {
+        //initailly when scanner page loads up, the camera is acivated and isScanning is true...
         setState(() {
-          result = scanData;
+          result = scanData; //storing the qr scanned data in result variable
           _isScanning = false; // Stop scanning further
         });
-        await controller.pauseCamera();
+        await controller.pauseCamera(); //pause the camera
 
         //Data extraction computation.
-        //As we have embedded data using 2'&'
+        //As user have embedded data using 2'&'
         //The 1st part is channelId, 2nd ReadApi, 3rd WriteApi
         String? qrData = scanData.code;
         List<String>? parts = qrData?.split('&');
         if (parts!.length < 3) {
-          //if we don't get above 3 info ==> then we've scanned wrong qr
+          //if user don't get above 3 info ==> then user've scanned wrong qr
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BadResponse()),
@@ -138,14 +142,14 @@ class _ScannerPageState extends State<ScannerPage> {
           //storing http request using fetchApiData in variable
           var response = await fetchApiData(cId, readApi, writeApi);
           if (response.isEmpty) {
-            //if response is empty
+            //if response is empty ==> may arise if the device doesn't contain data
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => BadResponse()),
             );
           } else {
             //received JSON and calling ResultPage passing response as
-            //a parameter for displaying
+            //a parameter for displaying the results
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -157,12 +161,14 @@ class _ScannerPageState extends State<ScannerPage> {
     });
   }
 
+  //The purpose of "fetchApiData" code is to fetch the latest feed from a specified Thingspeak channel. The http.get request sends a GET request to the Thingspeak API with the specified channel ID and API key, and the response is stored in the response variable.
   Future<Map<String, dynamic>> fetchApiData(
       String cId, String readApi, String writeApi) async {
-    //making http request in try catch block for handling exceptions, if response
-    //is valid then
-    //if invalid the it return empty <Map,String>
+    //making http request in try catch block for handling exceptions,
+    //if valid then the function returns a Future<Map<String, dynamic>>, which means it returns a Future that resolves to a Map with String keys and dynamic values.
+    //if invalid the it return empty <Map<>>
     try {
+      //using http package to make GET request from ThinkSpeak Api
       final response = await http.get(Uri.parse(
           'https://api.thingspeak.com/channels/$cId/feeds.json?api_key=$readApi&results=1'));
 
@@ -177,6 +183,7 @@ class _ScannerPageState extends State<ScannerPage> {
     }
   }
 
+  //remove widget from widget tree  disposes of the QRViewController instance
   @override
   void dispose() {
     controller?.dispose();

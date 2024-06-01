@@ -5,11 +5,14 @@ import 'package:qrcs/home_page.dart';
 import 'package:qrcs/bad_response.dart';
 
 void main() {
-  runApp(MyApp()); //entry point when application starts
+  runApp(const MyApp()); //entry point when application starts
 }
 
 class MyApp extends StatelessWidget {
-  // const MyApp({super.key});
+  const MyApp({super.key});
+  //constant constructor "MyApp", its instance is created at compile time
+  //StatefulWidget class property "key" is passed as a constructor parameter
+  //used for identifying widgets and manage their state efficiently.
 
   @override
   Widget build(BuildContext context) {

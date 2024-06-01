@@ -37,6 +37,8 @@ dependencies:
   qr_code_scanner: ^1.0.1
   audioplayers: ^4.1.0
   http: ^0.13.6
+  fluttertoast: ^8.2.5
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:

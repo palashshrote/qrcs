@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'scanner_page.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+  //constant constructor, its instance is created at compile time
+  //StatefulWidget class property "key" is passed as a constructor parameter
+  //used for identifying widgets and manage their state efficiently.
 
   @override
   _HomePageState createState() => _HomePageState();
+  //overrides createState method retuns instance of _HomePageState which manages the muatable state of HomePage
 }
 
 class _HomePageState extends State<HomePage> {
-  //stores the value of extracted data from QR
+  //used for storing the value of extracted data from QR
   String? codeType;
   String? codeData;
 
@@ -45,15 +51,32 @@ class _HomePageState extends State<HomePage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
+
+                //functionality of button when tapped that is it should route to scanner_page
                 onPressed: () async {
-                  //functionality of button when tapped that is it should go to scanner_page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ScannerPage()),
-                  );
+                  //for checking network connectivity
+                  var connectivityResult =
+                      await (Connectivity().checkConnectivity());
+
+                  if (connectivityResult == ConnectivityResult.none) {
+                    Fluttertoast.showToast(
+                      msg:
+                          "No network connection. Please connect to a network and try again.",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Color.fromARGB(255, 4, 74, 100),
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScannerPage()),
+                    );
+                  }
                 },
-                child: const Text('Scan a Code'),
+                child: const Text('Scan device QR code'),
               ),
             ],
           ),
