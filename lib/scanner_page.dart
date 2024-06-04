@@ -39,7 +39,7 @@ class _ScannerPageState extends State<ScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Device Validator'),
+        title: const Text('Scanning'),
         //4 icon button (toggle flash, switch camera, pause and resume camera)
         actions: [
           IconButton(
@@ -52,18 +52,6 @@ class _ScannerPageState extends State<ScannerPage> {
             icon: const Icon(Icons.switch_camera),
             onPressed: () async {
               await controller?.flipCamera();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.pause),
-            onPressed: () async {
-              await controller?.pauseCamera();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.play_arrow),
-            onPressed: () async {
-              await controller?.resumeCamera();
             },
           ),
         ],
