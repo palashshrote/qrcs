@@ -76,7 +76,13 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                 },
-                child: const Text('Scan device QR code'),
+                child: const Text(
+                  'Scan device QR code',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
