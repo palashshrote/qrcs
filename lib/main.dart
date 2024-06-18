@@ -1,10 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:qrcs/result_page.dart';
 import 'package:qrcs/scanner_page.dart';
 import 'package:qrcs/home_page.dart';
 import 'package:qrcs/bad_response.dart';
+import 'package:qrcs/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp()); //entry point when application starts
 }
 
