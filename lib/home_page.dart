@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qrcs/services/auth_service.dart';
 import 'scanner_page.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,6 +22,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //instance of Authservice for sign out
+    final _auth = AuthService();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Device Validator'),
@@ -83,6 +86,13 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                   ),
                 ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await _auth.signout();
+                  // goToLogin(context);
+                },
+                child: Text('Sign out'),
               ),
             ],
           ),

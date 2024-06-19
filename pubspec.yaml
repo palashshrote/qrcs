@@ -40,6 +40,7 @@ dependencies:
   fluttertoast: ^8.2.5
   connectivity_plus: ^5.0.2
   firebase_core: ^3.1.0
+  firebase_auth: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ flutter:
   assets:
     # - not1sec.wav
     - assets/images/homeScr.png
+    - assets/images/banner.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

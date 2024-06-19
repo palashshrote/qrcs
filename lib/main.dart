@@ -4,13 +4,12 @@ import 'package:qrcs/result_page.dart';
 import 'package:qrcs/scanner_page.dart';
 import 'package:qrcs/home_page.dart';
 import 'package:qrcs/bad_response.dart';
-import 'package:qrcs/firebase_options.dart';
+import 'package:qrcs/services/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   runApp(const MyApp()); //entry point when application starts
 }
 
@@ -27,13 +26,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark, //for dark theme
       ),
-      initialRoute: '/', //navigating with named routes
-      routes: {
-        '/': (context) => const HomePage(),
-        '/scanner': (context) => const ScannerPage(),
-        '/result': (context) => const ResultPage(data: {}),
-        '/badres': (context) => const BadResponse(),
-      },
+      home: StreamBuilder(
+        //StreamBuilder to handle authentication state changes
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return HomePage();
+          } else
+            return LoginPage();
+        },
+      ),
     );
   }
 }
